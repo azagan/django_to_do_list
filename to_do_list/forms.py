@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, CharField, Textarea
 from .models import Tasks, Subtasks
 
 
@@ -10,6 +10,8 @@ class TaskForm(ModelForm):
 
 
 class SubtaskForm(ModelForm):
+    description = CharField(required=False, widget=Textarea(attrs={'rows': 4, 'cols': 40}), label='Описание')
+
     class Meta:
         model = Subtasks
         fields = ('name', 'description', 'goals', 'complete')

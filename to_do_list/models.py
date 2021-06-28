@@ -27,4 +27,4 @@ class Subtasks(models.Model):
     class Meta:
         verbose_name_plural = 'Задачи'
         verbose_name = 'Задача'
-        ordering = ['complete', 'name']
+        ordering = ['pk']

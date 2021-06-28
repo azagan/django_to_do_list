@@ -1,0 +1,11 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Удаление{% endblock %}
+{% block content %}
+<h2>Удаление</h2>
+<p>Цель: {{ tasks.title }}</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Удалить">
+</form>
+{% endblock %}

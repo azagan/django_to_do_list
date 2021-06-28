@@ -1,0 +1,105 @@
+{% extends 'layout/basic.html' %}
+{% block content %}
+
+<h1 align="center"><a href="{% url 'to_do_list:add' %}">&#43;</a></h1>
+{% for task in tasks %}
+<p>
+    <div class="container overflow-hidden">
+        <button class="btn btn-primary" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#multiCollapseExample{{ forloop.counter }}"
+                aria-expanded="false"
+                aria-controls="multiCollapseExample{{ forloop.counter }}">{{task.title}}
+        </button>
+            {{ task.published }}
+        <div class="row">
+            <div class="col">
+<p>
+    <div class="collapse multi-collapse" id="multiCollapseExample{{ forloop.counter }}">
+        <div class="card card-body">
+
+            {% for subtask in task.subtasks.all %}
+            <div class="card card-body">
+            {% if subtask.complete %}
+<p><i><s><a href="{% url 'to_do_list:update_subtask' pk=subtask.pk %}">{{subtask.name }}</a></s></i></p>
+{% else %}
+<p><a href="{% url 'to_do_list:update_subtask' pk=subtask.pk %}">{{subtask.name}}</a></p>
+{% if subtask.description %}
+<div align="center"><i><b>{{subtask.description}}</b></i></div>
+{% endif %}
+{% endif %}
+
+<div>
+
+    <p>
+        <button id="delete-subtask" class="delete-button btn btn-danger" task_id="{{ subtask.id }}">
+            &#215;
+        </button>
+    </p>
+</div>
+</div>
+{% endfor %}
+
+<form method="POST" action="/">
+    {% csrf_token %}
+    <div class="mb-3">
+        <input type="text" name="name" class="form-control">
+        <input type="hidden" name="goals" value="{{task.id}}">
+    </div>
+    <p>
+        <button class="btn btn-primary" type="submit" name="add_subtask">Добавить задачу</button>
+    </p>
+
+</form>
+</div>
+</div></p>
+</div>
+
+</div>
+<p>
+    <a href="{% url 'to_do_list:update_task' pk=task.pk %}" class="btn btn-warning" type="button">&#9999;</a>
+    <a href="{% url 'to_do_list:delete' pk=task.pk %}" class="btn btn-danger" type="button">&#215;</a>
+</p>
+</div>
+</p>
+{% endfor %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+    const deleteButtons = document.querySelectorAll('.delete-button');
+
+    for (i = 0; i < deleteButtons.length; i++) {
+      deleteButtons[i].addEventListener("click", function() {
+        var delId = this.getAttribute('task_id');
+        $.ajax({
+          data: {'getdata': delId},
+          method: 'POST',
+          beforeSend: function (jqXHR) {
+                  jqXHR.setRequestHeader("X-CSRFToken", document.querySelector('[name=csrfmiddlewaretoken]').value);
+          },
+          success: function (res) {
+              console.log(res.data)
+          },
+          error: function (err) {
+              console.error(err)
+          },
+          complete: function () {
+                window.location = '{% url 'to_do_list:index' %}'
+            },
+        })
+      });
+    }
+
+
+
+
+
+</script>
+{% endblock content %}

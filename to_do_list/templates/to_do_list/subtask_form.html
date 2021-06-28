@@ -1,0 +1,11 @@
+{% extends 'layout/basic.html' %}
+{% block title %}Исправление{% endblock %}
+{% block content %}
+<a href="{% url 'to_do_list:index' %}">&#8592; Назад</a>
+<h2>Исправление задачи</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Сохранить">
+</form>
+{% endblock %}
